@@ -69,7 +69,7 @@ public class AccountService {
     }
 
 
-    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
+    @Transactional
     public void withdrawal1(WithdrawalDTO request) {
 
         Account main = accountRepository.findById(request.getMainAccountId())
