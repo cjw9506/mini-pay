@@ -1,9 +1,7 @@
 package com.minipay.account.service;
 
 import com.minipay.account.domain.Account;
-import com.minipay.account.dto.AccountDTO;
-import com.minipay.account.dto.DepositDTO;
-import com.minipay.account.dto.WithdrawalDTO;
+import com.minipay.account.dto.*;
 import com.minipay.account.repository.AccountRepository;
 import com.minipay.deposit.domain.Deposit;
 import com.minipay.deposit.repository.DepositRepository;
@@ -12,11 +10,11 @@ import com.minipay.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -84,6 +82,14 @@ public class AccountService {
         main.deposit(-request.getBalance());
         saving.deposit(request.getBalance());
 
+    }
+    public List<GetAccountResponseDTO> getAccounts(Long userId) {
+
+        List<Account> accounts = accountRepository.findAllByUserId(userId);
+
+        return accounts.stream()
+                .map(account -> new GetAccountResponseDTO(account.getId(), account.getBalance(), account.getType()))
+                .collect(Collectors.toList());
     }
 
 }
