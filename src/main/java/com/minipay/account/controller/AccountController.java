@@ -1,5 +1,6 @@
 package com.minipay.account.controller;
 
+import com.minipay.account.domain.Type;
 import com.minipay.account.dto.*;
 import com.minipay.account.service.AccountService;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +46,14 @@ public class AccountController {
         List<GetAccountResponseDTO> accounts = accountService.getAccounts(userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(accounts);
+    }
+
+    @GetMapping("/{userId}/account")
+    public ResponseEntity<?> getAccount(@PathVariable("userId") Long userId,
+                                        @RequestParam("type") Type type) {
+        GetAccountResponseDTO account = accountService.getAccount(userId, type);
+
+        return ResponseEntity.status(HttpStatus.OK).body(account);
     }
 
 

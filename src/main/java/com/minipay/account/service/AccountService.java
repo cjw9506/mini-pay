@@ -1,6 +1,7 @@
 package com.minipay.account.service;
 
 import com.minipay.account.domain.Account;
+import com.minipay.account.domain.Type;
 import com.minipay.account.dto.*;
 import com.minipay.account.repository.AccountRepository;
 import com.minipay.deposit.domain.Deposit;
@@ -88,8 +89,24 @@ public class AccountService {
         List<Account> accounts = accountRepository.findAllByUserId(userId);
 
         return accounts.stream()
-                .map(account -> new GetAccountResponseDTO(account.getId(), account.getBalance(), account.getType()))
+                .map(account -> GetAccountResponseDTO.builder()
+                        .id(account.getId())
+                        .balance(account.getBalance())
+                        .type(account.getType())
+                        .build())
                 .collect(Collectors.toList());
     }
 
+
+    public GetAccountResponseDTO getAccount(Long userId, Type type) {
+
+        Account account = accountRepository.findByUserIdAndType(userId, type);
+
+        return GetAccountResponseDTO
+                .builder()
+                .id(account.getId())
+                .balance(account.getBalance())
+                .type(account.getType())
+                .build();
+    }
 }
