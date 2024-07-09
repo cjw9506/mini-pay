@@ -1,16 +1,17 @@
 package com.minipay.account.controller;
 
-
-import com.minipay.account.dto.AccountDTO;
-import com.minipay.account.dto.DepositDTO;
-import com.minipay.account.dto.WithdrawalDTO;
+import com.minipay.account.domain.Type;
+import com.minipay.account.dto.*;
 import com.minipay.account.service.AccountService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/account")
+@RequestMapping("/api/accounts")
 @RequiredArgsConstructor
 public class AccountController {
 
@@ -38,6 +39,29 @@ public class AccountController {
         accountService.withdrawal1(request);
 
         return ResponseEntity.ok().body(null);
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<?> getAccounts(@PathVariable("userId") Long userId) {
+        List<GetAccountResponseDTO> accounts = accountService.getAccounts(userId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(accounts);
+    }
+
+    @GetMapping("/{userId}/account")
+    public ResponseEntity<?> getAccount(@PathVariable("userId") Long userId,
+                                        @RequestParam("type") Type type) {
+        GetAccountResponseDTO account = accountService.getAccount(userId, type);
+
+        return ResponseEntity.status(HttpStatus.OK).body(account);
+    }
+
+    @PostMapping("/remittance")
+    public ResponseEntity<?> remittance(@RequestBody RemittanceDTO request) {
+
+        accountService.remittance(request);
+
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
 

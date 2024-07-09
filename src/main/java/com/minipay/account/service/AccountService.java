@@ -1,9 +1,8 @@
 package com.minipay.account.service;
 
 import com.minipay.account.domain.Account;
-import com.minipay.account.dto.AccountDTO;
-import com.minipay.account.dto.DepositDTO;
-import com.minipay.account.dto.WithdrawalDTO;
+import com.minipay.account.domain.Type;
+import com.minipay.account.dto.*;
 import com.minipay.account.repository.AccountRepository;
 import com.minipay.deposit.domain.Deposit;
 import com.minipay.deposit.repository.DepositRepository;
@@ -12,11 +11,11 @@ import com.minipay.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -84,6 +83,69 @@ public class AccountService {
         main.deposit(-request.getBalance());
         saving.deposit(request.getBalance());
 
+    }
+    public List<GetAccountResponseDTO> getAccounts(Long userId) {
+
+        List<Account> accounts = accountRepository.findAllByUserId(userId);
+
+        return accounts.stream()
+                .map(account -> GetAccountResponseDTO.builder()
+                        .id(account.getId())
+                        .balance(account.getBalance())
+                        .type(account.getType())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+
+    public GetAccountResponseDTO getAccount(Long userId, Type type) {
+
+        Account account = accountRepository.findByUserIdAndType(userId, type);
+
+        return GetAccountResponseDTO
+                .builder()
+                .id(account.getId())
+                .balance(account.getBalance())
+                .type(account.getType())
+                .build();
+    }
+
+    @Transactional
+    public void remittance(RemittanceDTO request) {
+
+        Account senderAccount = accountRepository.findById(request.getSenderAccountId()).orElseThrow(IllegalArgumentException::new);
+        Account receiverAccount = accountRepository.findById(request.getReceiverAccountId()).orElseThrow(IllegalArgumentException::new);
+
+        if (senderAccount.getBalance() >= request.getBalance()) { //가진돈이 보낼돈보다 많다면
+            senderAccount.deposit(-request.getBalance());
+            receiverAccount.deposit(request.getBalance());
+        } else { //가진돈이 보낼돈보다 적다면
+            LocalDate today = LocalDate.now();
+
+            List<Deposit> deposits = depositRepository.findDepositsForToday(senderAccount.getId(), today);
+            long totalDeposit = deposits.stream().mapToLong(Deposit::getAmount).sum();
+
+            if (totalDeposit + request.getBalance() > TODAY_LIMIT) { // 오늘충전금액 + 보낼금액 > 일일 충전 한도
+                throw new IllegalArgumentException("일일 입금 금액 초과");
+            } else {
+                long chargeAmount = ((request.getBalance() + 9999 - senderAccount.getBalance()) / 10000) * 10000; //충전금액
+
+                Deposit deposit = Deposit.builder()
+                        .account(senderAccount)
+                        .amount(chargeAmount)
+                        .timeStamp(today)
+                        .build();
+
+                System.out.println(chargeAmount);
+                System.out.println(request.getBalance());
+
+                depositRepository.save(deposit);
+
+                senderAccount.deposit(-request.getBalance() + chargeAmount);
+                receiverAccount.deposit(request.getBalance());
+
+            }
+        }
     }
 
 }
