@@ -56,5 +56,13 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(account);
     }
 
+    @PostMapping("/remittance")
+    public ResponseEntity<?> remittance(@RequestBody RemittanceDTO request) {
+
+        accountService.remittance(request);
+
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
 
 }
