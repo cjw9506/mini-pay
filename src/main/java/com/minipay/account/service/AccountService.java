@@ -113,39 +113,42 @@ public class AccountService {
     @Transactional
     public void remittance(RemittanceDTO request) {
 
-        Account senderAccount = accountRepository.findById(request.getSenderAccountId()).orElseThrow(IllegalArgumentException::new);
-        Account receiverAccount = accountRepository.findById(request.getReceiverAccountId()).orElseThrow(IllegalArgumentException::new);
+        Account senderAccount = accountRepository.findByIdWithPessimisticLock(request.getSenderAccountId());
+        Account receiverAccount = accountRepository.findByIdWithPessimisticLock(request.getReceiverAccountId());
 
         if (senderAccount.getBalance() >= request.getBalance()) { //가진돈이 보낼돈보다 많다면
             senderAccount.deposit(-request.getBalance());
             receiverAccount.deposit(request.getBalance());
         } else { //가진돈이 보낼돈보다 적다면
             LocalDate today = LocalDate.now();
-
-            List<Deposit> deposits = depositRepository.findDepositsForToday(senderAccount.getId(), today);
-            long totalDeposit = deposits.stream().mapToLong(Deposit::getAmount).sum();
-
-            if (totalDeposit + request.getBalance() > TODAY_LIMIT) { // 오늘충전금액 + 보낼금액 > 일일 충전 한도
-                throw new IllegalArgumentException("일일 입금 금액 초과");
-            } else {
-                long chargeAmount = ((request.getBalance() + 9999 - senderAccount.getBalance()) / 10000) * 10000; //충전금액
-
-                Deposit deposit = Deposit.builder()
-                        .account(senderAccount)
-                        .amount(chargeAmount)
-                        .timeStamp(today)
-                        .build();
-
-                System.out.println(chargeAmount);
-                System.out.println(request.getBalance());
-
-                depositRepository.save(deposit);
-
-                senderAccount.deposit(-request.getBalance() + chargeAmount);
-                receiverAccount.deposit(request.getBalance());
-
-            }
+            long totalDeposit = getTotalDeposit(senderAccount, today);
+            daliyLimitDetermination(request, totalDeposit, senderAccount, today, receiverAccount);
         }
+    }
+
+    private void daliyLimitDetermination(RemittanceDTO request, long totalDeposit, Account senderAccount, LocalDate today, Account receiverAccount) {
+        if (totalDeposit + request.getBalance() > TODAY_LIMIT) { // 오늘충전금액 + 보낼금액 > 일일 충전 한도
+            throw new IllegalArgumentException("일일 입금 금액 초과");
+        } else {
+            long chargeAmount = ((request.getBalance() + 9999 - senderAccount.getBalance()) / 10000) * 10000; //충전금액
+
+            Deposit deposit = Deposit.builder()
+                    .account(senderAccount)
+                    .amount(chargeAmount)
+                    .timeStamp(today)
+                    .build();
+
+            depositRepository.save(deposit);
+
+            senderAccount.deposit(-request.getBalance() + chargeAmount);
+            receiverAccount.deposit(request.getBalance());
+
+        }
+    }
+
+    private long getTotalDeposit(Account senderAccount, LocalDate today) {
+        List<Deposit> deposits = depositRepository.findDepositsForToday(senderAccount.getId(), today);
+        return deposits.stream().mapToLong(Deposit::getAmount).sum();
     }
 
 }
