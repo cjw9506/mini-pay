@@ -4,16 +4,19 @@ import com.minipay.account.domain.Account;
 import com.minipay.account.domain.Type;
 import com.minipay.account.dto.*;
 import com.minipay.account.repository.AccountRepository;
+import com.minipay.daliyLimit.domain.DailyLimit;
+import com.minipay.daliyLimit.repository.DailyLimitRepository;
 import com.minipay.deposit.domain.Deposit;
 import com.minipay.deposit.repository.DepositRepository;
 import com.minipay.user.domain.User;
 import com.minipay.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,32 +28,34 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final DepositRepository depositRepository;
     private final UserRepository userRepository;
+    private final DailyLimitRepository dailyLimitRepository;
 
     private static final long TODAY_LIMIT = 3000000L;
 
     @Transactional
     public void deposit(DepositDTO request) {
 
-        LocalDate today = LocalDate.now();
         Account account = accountRepository.findById(request.getAccountId())
                 .orElseThrow(() -> new IllegalArgumentException("계좌를 찾을 수 없습니다."));
 
-        List<Deposit> deposits = depositRepository.findDepositsForToday(request.getAccountId(), today);
-        long totalDeposit = deposits.stream().mapToLong(Deposit::getAmount).sum();
+        Long userId = account.getUser().getId();
+        DailyLimit dailyLimit = dailyLimitRepository.findById(userId).orElseThrow(IllegalArgumentException::new);
+        long dailyLimitBalance= dailyLimit.getDailyTotalBalance();
 
-        if (totalDeposit + request.getBalance() > TODAY_LIMIT) {
+        if (dailyLimitBalance + request.getBalance() > TODAY_LIMIT) {
             throw new IllegalArgumentException("일일 입금 금액 초과");
         }
 
         Deposit deposit = Deposit.builder()
                 .account(account)
                 .amount(request.getBalance())
-                .timeStamp(today)
+                .timeStamp(LocalDateTime.now())
                 .build();
 
         account.deposit(request.getBalance());
         depositRepository.save(deposit);
 
+        dailyLimit.addBalance(request.getBalance());
     }
 
     @Transactional
@@ -84,6 +89,8 @@ public class AccountService {
         saving.deposit(request.getBalance());
 
     }
+
+    @Transactional(readOnly = true)
     public List<GetAccountResponseDTO> getAccounts(Long userId) {
 
         List<Account> accounts = accountRepository.findAllByUserId(userId);
@@ -97,7 +104,7 @@ public class AccountService {
                 .collect(Collectors.toList());
     }
 
-
+    @Transactional(readOnly = true)
     public GetAccountResponseDTO getAccount(Long userId, Type type) {
 
         Account account = accountRepository.findByUserIdAndType(userId, type);
@@ -120,13 +127,12 @@ public class AccountService {
             senderAccount.deposit(-request.getBalance());
             receiverAccount.deposit(request.getBalance());
         } else { //가진돈이 보낼돈보다 적다면
-            LocalDate today = LocalDate.now();
-            long totalDeposit = getTotalDeposit(senderAccount, today);
-            daliyLimitDetermination(request, totalDeposit, senderAccount, today, receiverAccount);
+            long totalDeposit = getTotalDeposit(senderAccount);
+            daliyLimitDetermination(request, totalDeposit, senderAccount, receiverAccount);
         }
     }
 
-    private void daliyLimitDetermination(RemittanceDTO request, long totalDeposit, Account senderAccount, LocalDate today, Account receiverAccount) {
+    private void daliyLimitDetermination(RemittanceDTO request, long totalDeposit, Account senderAccount, Account receiverAccount) {
         if (totalDeposit + request.getBalance() > TODAY_LIMIT) { // 오늘충전금액 + 보낼금액 > 일일 충전 한도
             throw new IllegalArgumentException("일일 입금 금액 초과");
         } else {
@@ -135,7 +141,7 @@ public class AccountService {
             Deposit deposit = Deposit.builder()
                     .account(senderAccount)
                     .amount(chargeAmount)
-                    .timeStamp(today)
+                    .timeStamp(LocalDateTime.now())
                     .build();
 
             depositRepository.save(deposit);
@@ -146,9 +152,16 @@ public class AccountService {
         }
     }
 
-    private long getTotalDeposit(Account senderAccount, LocalDate today) {
-        List<Deposit> deposits = depositRepository.findDepositsForToday(senderAccount.getId(), today);
-        return deposits.stream().mapToLong(Deposit::getAmount).sum();
+    private long getTotalDeposit(Account senderAccount) {
+        DailyLimit dailyLimit = dailyLimitRepository.findById(senderAccount.getId()).orElseThrow(IllegalArgumentException::new);
+        return dailyLimit.getDailyTotalBalance();
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?")
+    @Transactional
+    public void dailyLimitReset() {
+        List<DailyLimit> dailyLimitForAllUsers = dailyLimitRepository.findAll();
+        dailyLimitForAllUsers.forEach(dailyLimit -> dailyLimit.resetDailyBalance(0));
     }
 
 }

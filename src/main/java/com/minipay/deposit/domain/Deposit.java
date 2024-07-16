@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -23,10 +23,10 @@ public class Deposit {
 
     private long amount;
 
-    private LocalDate timeStamp;
+    private LocalDateTime timeStamp;
 
     @Builder
-    public Deposit(Account account, long amount, LocalDate timeStamp) {
+    public Deposit(Account account, long amount, LocalDateTime timeStamp) {
         this.account = account;
         this.amount = amount;
         this.timeStamp = timeStamp;
