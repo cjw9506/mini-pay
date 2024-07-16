@@ -3,6 +3,8 @@ package com.minipay.user.service;
 import com.minipay.account.domain.Account;
 import com.minipay.account.domain.Type;
 import com.minipay.account.repository.AccountRepository;
+import com.minipay.daliyLimit.domain.DailyLimit;
+import com.minipay.daliyLimit.repository.DailyLimitRepository;
 import com.minipay.user.domain.User;
 import com.minipay.user.dto.SignupDTO;
 import com.minipay.user.repository.UserRepository;
@@ -18,6 +20,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final AccountRepository accountRepository;
+    private final DailyLimitRepository dailyLimitRepository;
 
     @Transactional // 회원가입
     public void save(SignupDTO request) {
@@ -37,5 +40,12 @@ public class UserService {
                 .build();
 
         accountRepository.save(account);
+
+        DailyLimit dailyLimit = DailyLimit.builder()
+                .userId(user.getId())
+                .dailyTotalBalance(0L)
+                .build();
+
+        dailyLimitRepository.save(dailyLimit);
     }
 }
