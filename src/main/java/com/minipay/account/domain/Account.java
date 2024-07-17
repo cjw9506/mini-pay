@@ -34,4 +34,8 @@ public class Account {
     public void deposit(long balance) {
         this.balance += balance;
     }
+
+    public void addInterest(long balance) {
+        this.balance += balance;
+    }
 }
