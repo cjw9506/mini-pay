@@ -74,7 +74,7 @@ public class AccountService {
 
 
     @Transactional
-    public void withdrawal1(WithdrawalDTO request) {
+    public void withdrawal(WithdrawalDTO request) {
 
         Account main = accountRepository.findById(request.getMainAccountId())
                 .orElseThrow(() -> new IllegalArgumentException("메인 계좌를 찾을 수 없습니다."));
@@ -163,5 +163,18 @@ public class AccountService {
         List<DailyLimit> dailyLimitForAllUsers = dailyLimitRepository.findAll();
         dailyLimitForAllUsers.forEach(dailyLimit -> dailyLimit.resetDailyBalance(0));
     }
+
+    @Scheduled(cron = "0 0 4 * * ?")
+    @Transactional
+    public void savingInterest() {
+        List<Account> accounts = accountRepository.findAllSavingsAccounts();
+
+        for (Account a : accounts) {
+            long interest = (long) Math.ceil((a.getBalance() / 100) * 3);
+            a.addInterest(interest);
+        }
+    }
+
+
 
 }
