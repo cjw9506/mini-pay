@@ -11,10 +11,12 @@ public class AccountDTO {
 
     private Long userId;
     private Type type;
+    private long regularFee;
 
     @Builder
-    public AccountDTO(Long userId, Type type) {
+    public AccountDTO(Long userId, Type type, long regularFee) {
         this.userId = userId;
         this.type = type;
+        this.regularFee = regularFee;
     }
 }

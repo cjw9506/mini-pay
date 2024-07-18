@@ -24,11 +24,14 @@ public class Account {
     @Enumerated(value = EnumType.STRING)
     private Type type;
 
+    private long regularFee;
+
     @Builder
-    public Account(User user, long balance, Type type) {
+    public Account(User user, long balance, Type type, long regularFee) {
         this.user = user;
         this.balance = balance;
         this.type = type;
+        this.regularFee = regularFee;
     }
 
     public void deposit(long balance) {
