@@ -36,7 +36,7 @@ public class AccountController {
     @PatchMapping("/withdrawal") //이체 메인 -> 적금
     public ResponseEntity<?> withdrawal(@RequestBody WithdrawalDTO request) {
 
-        accountService.withdrawal1(request);
+        accountService.withdrawal(request);
 
         return ResponseEntity.ok().body(null);
     }

@@ -21,4 +21,9 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select a from Account a where a.id = :id")
     Account findByIdWithPessimisticLock(@Param("id") Long id);
+
+    @Query("SELECT a FROM Account a WHERE a.type = 'FREE_SAVING' or a.type = 'REGULAR_SAVING'")
+    List<Account> findAllSavingsAccounts();
+
+
 }

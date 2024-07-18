@@ -67,6 +67,7 @@ public class AccountService {
                 .user(user)
                 .type(request.getType())
                 .balance(0L)
+                .regularFee(request.getRegularFee())
                 .build();
 
         accountRepository.save(newAccount);
@@ -74,7 +75,7 @@ public class AccountService {
 
 
     @Transactional
-    public void withdrawal1(WithdrawalDTO request) {
+    public void withdrawal(WithdrawalDTO request) {
 
         Account main = accountRepository.findById(request.getMainAccountId())
                 .orElseThrow(() -> new IllegalArgumentException("메인 계좌를 찾을 수 없습니다."));
@@ -162,6 +163,50 @@ public class AccountService {
     public void dailyLimitReset() {
         List<DailyLimit> dailyLimitForAllUsers = dailyLimitRepository.findAll();
         dailyLimitForAllUsers.forEach(dailyLimit -> dailyLimit.resetDailyBalance(0));
+    }
+
+    @Scheduled(cron = "0 0 4 * * ?")
+    @Transactional
+    public void savingInterest() {
+        List<Account> accounts = accountRepository.findAllSavingsAccounts();
+
+        for (Account a : accounts) {
+            if (a.getType() == Type.FREE_SAVING) {
+                long interest = (long) Math.ceil((a.getBalance() / 100) * 3);
+                a.addInterest(interest);
+            } else if (a.getType() == Type.REGULAR_SAVING) {
+                long interest = (long) Math.ceil((a.getBalance() / 100) * 5);
+                a.addInterest(interest);
+            }
+        }
+    }
+
+    @Scheduled(cron = "0 0 8 * * ?")
+    @Transactional
+    public void withdrawalOfSaving() {
+        List<Account> accounts = accountRepository.findAllSavingsAccounts();
+
+        for (Account a : accounts) {
+            if (a.getType() == Type.REGULAR_SAVING) {
+                Account mainAccount = accountRepository.findByUserIdAndType(a.getUser().getId(), Type.MAIN);
+                if (a.getRegularFee() > mainAccount.getBalance()) {
+                    long chargeAmount = (((a.getRegularFee() + 9999 - mainAccount.getBalance()) / 10000) * 10000); //충전금액
+
+                    Deposit deposit = Deposit.builder()
+                            .account(a)
+                            .amount(chargeAmount)
+                            .timeStamp(LocalDateTime.now())
+                            .build();
+
+                    depositRepository.save(deposit);
+                    mainAccount.deposit(-a.getRegularFee() + chargeAmount);
+                    a.deposit(a.getRegularFee());
+                } else {
+                    mainAccount.deposit(-a.getRegularFee());
+                    a.deposit(a.getRegularFee());
+                }
+            }
+        }
     }
 
 }
