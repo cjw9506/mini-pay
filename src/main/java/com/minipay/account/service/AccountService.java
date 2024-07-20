@@ -8,6 +8,8 @@ import com.minipay.daliyLimit.domain.DailyLimit;
 import com.minipay.daliyLimit.repository.DailyLimitRepository;
 import com.minipay.deposit.domain.Deposit;
 import com.minipay.deposit.repository.DepositRepository;
+import com.minipay.transaction.domain.Transaction;
+import com.minipay.transaction.repository.TransactionRepository;
 import com.minipay.user.domain.User;
 import com.minipay.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,7 @@ public class AccountService {
     private final DepositRepository depositRepository;
     private final UserRepository userRepository;
     private final DailyLimitRepository dailyLimitRepository;
+    private final TransactionRepository transactionRepository;
 
     private static final long TODAY_LIMIT = 3000000L;
 
@@ -131,6 +134,16 @@ public class AccountService {
             long totalDeposit = getTotalDeposit(senderAccount);
             daliyLimitDetermination(request, totalDeposit, senderAccount, receiverAccount);
         }
+
+        Transaction transaction = Transaction.builder()
+                .senderAccount(senderAccount)
+                .receiverAccount(receiverAccount)
+                .amount(request.getBalance())
+                .sourceOrDestination(request.getSourceOrDestination())
+                .timeStamp(LocalDateTime.now())
+                .build();
+
+        transactionRepository.save(transaction);
     }
 
     private void daliyLimitDetermination(RemittanceDTO request, long totalDeposit, Account senderAccount, Account receiverAccount) {
