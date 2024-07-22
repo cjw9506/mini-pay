@@ -38,11 +38,10 @@ public class AccountService {
     @Transactional
     public void deposit(DepositDTO request) {
 
-        Account account = accountRepository.findById(request.getAccountId())
-                .orElseThrow(() -> new IllegalArgumentException("계좌를 찾을 수 없습니다."));
+        Account account = accountRepository.findByIdWithPessimisticLock(request.getAccountId());
 
         Long userId = account.getUser().getId();
-        DailyLimit dailyLimit = dailyLimitRepository.findById(userId).orElseThrow(IllegalArgumentException::new);
+        DailyLimit dailyLimit = dailyLimitRepository.findByIdWithPessimisticLock(userId);
         long dailyLimitBalance= dailyLimit.getDailyTotalBalance();
 
         if (dailyLimitBalance + request.getBalance() > TODAY_LIMIT) {
@@ -80,10 +79,8 @@ public class AccountService {
     @Transactional
     public void withdrawal(WithdrawalDTO request) {
 
-        Account main = accountRepository.findById(request.getMainAccountId())
-                .orElseThrow(() -> new IllegalArgumentException("메인 계좌를 찾을 수 없습니다."));
-        Account saving = accountRepository.findById(request.getSavingAccountId())
-                .orElseThrow(() -> new IllegalArgumentException("적금 계좌를 찾을 수 없습니다."));
+        Account main = accountRepository.findByIdWithPessimisticLock(request.getMainAccountId());
+        Account saving = accountRepository.findByIdWithPessimisticLock(request.getSavingAccountId());
 
         if (main.getBalance()  < request.getBalance()) {
             throw new IllegalArgumentException("메인계좌의 잔액이 부족합니다");
