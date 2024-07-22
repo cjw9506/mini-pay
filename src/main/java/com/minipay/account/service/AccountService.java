@@ -38,11 +38,10 @@ public class AccountService {
     @Transactional
     public void deposit(DepositDTO request) {
 
-        Account account = accountRepository.findById(request.getAccountId())
-                .orElseThrow(() -> new IllegalArgumentException("계좌를 찾을 수 없습니다."));
+        Account account = accountRepository.findByIdWithPessimisticLock(request.getAccountId());
 
         Long userId = account.getUser().getId();
-        DailyLimit dailyLimit = dailyLimitRepository.findById(userId).orElseThrow(IllegalArgumentException::new);
+        DailyLimit dailyLimit = dailyLimitRepository.findByIdWithPessimisticLock(userId);
         long dailyLimitBalance= dailyLimit.getDailyTotalBalance();
 
         if (dailyLimitBalance + request.getBalance() > TODAY_LIMIT) {
