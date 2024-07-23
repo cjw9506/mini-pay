@@ -143,6 +143,23 @@ public class AccountService {
         transactionRepository.save(transaction);
     }
 
+    @Transactional(readOnly = true)
+    public List<TransactionsDTO> getRemittanceHistory(Long userId) {
+        Account account = accountRepository.findByUserIdAndType(userId, Type.MAIN);
+
+        List<Transaction> transactions = transactionRepository.findByReceiverOrSenderAccount(account);
+
+        return transactions.stream()
+                .map(transaction -> TransactionsDTO.builder()
+                        .receiverId(transaction.getReceiverAccount().getId())
+                        .senderId(transaction.getSenderAccount().getId())
+                        .timeStamp(transaction.getTimeStamp())
+                        .sourceOrDestination(transaction.getSourceOrDestination())
+                        .amount(transaction.getAmount())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
     private void daliyLimitDetermination(RemittanceDTO request, long totalDeposit, Account senderAccount, Account receiverAccount) {
         if (totalDeposit + request.getBalance() > TODAY_LIMIT) { // 오늘충전금액 + 보낼금액 > 일일 충전 한도
             throw new IllegalArgumentException("일일 입금 금액 초과");
@@ -218,5 +235,6 @@ public class AccountService {
             }
         }
     }
+
 
 }
