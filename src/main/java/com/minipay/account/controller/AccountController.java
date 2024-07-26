@@ -64,5 +64,12 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
+    @GetMapping("/remittance/{userId}")
+    public ResponseEntity<?> remittanceHistory(@PathVariable("userId") Long userId) {
+        List<TransactionsDTO> transactions = accountService.getRemittanceHistory(userId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(transactions);
+    }
+
 
 }
