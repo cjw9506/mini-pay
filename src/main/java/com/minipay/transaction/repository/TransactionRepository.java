@@ -10,8 +10,12 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface TransactionRepository extends JpaRepository<Transaction, Long> {
+public interface TransactionRepository extends
+        JpaRepository<Transaction, Long>, TransactionRepositoryCustom {
 
-    @Query("SELECT t FROM Transaction t WHERE t.receiverAccount = :account OR t.senderAccount = :account")
+    @Query(value = "SELECT * FROM transaction WHERE receiver_account_id = :accountId " +
+            "UNION ALL " +
+            "SELECT * FROM transaction WHERE sender_account_id = :accountId",
+            nativeQuery = true)
     List<Transaction> findByReceiverOrSenderAccount(@Param("account") Account account);
 }

@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class TransactionsDTO {
 
+    private Long id;
     private Long receiverId;
     private Long senderId;
     private LocalDateTime timeStamp;
@@ -19,8 +20,9 @@ public class TransactionsDTO {
     private Long amount;
 
     @Builder
-    public TransactionsDTO(Long receiverId, Long senderId, LocalDateTime timeStamp,
+    public TransactionsDTO(Long id, Long receiverId, Long senderId, LocalDateTime timeStamp,
                            String sourceOrDestination, Long amount) {
+        this.id = id;
         this.receiverId = receiverId;
         this.senderId = senderId;
         this.timeStamp = timeStamp;
@@ -29,6 +31,7 @@ public class TransactionsDTO {
     }
 
     public TransactionsDTO(Transaction transaction) {
+        this.id = transaction.getId();
         this.receiverId = transaction.getReceiverAccount().getId();
         this.senderId = transaction.getSenderAccount().getId();
         this.timeStamp = transaction.getTimeStamp();
