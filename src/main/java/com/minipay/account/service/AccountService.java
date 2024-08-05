@@ -144,10 +144,10 @@ public class AccountService {
     }
 
     @Transactional(readOnly = true)
-    public List<TransactionsDTO> getRemittanceHistory(Long userId) {
+    public List<TransactionsDTO> getRemittanceHistory(Long userId, int page, int size) {
         Account account = accountRepository.findByUserIdAndType(userId, Type.MAIN);
 
-        List<Transaction> transactions = transactionRepository.findByReceiverOrSenderAccount(account);
+        List<Transaction> transactions = transactionRepository.getList(account, page, size);
 
         return transactions.stream()
                 .map(transaction -> TransactionsDTO.builder()

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface TransactionRepository extends JpaRepository<Transaction, Long> {
+public interface TransactionRepository extends JpaRepository<Transaction, Long>, TransactionRepositoryCustom {
 
     @Query("SELECT t FROM Transaction t WHERE t.receiverAccount = :account OR t.senderAccount = :account")
     List<Transaction> findByReceiverOrSenderAccount(@Param("account") Account account);
