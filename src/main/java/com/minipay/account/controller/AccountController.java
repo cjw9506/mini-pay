@@ -65,11 +65,13 @@ public class AccountController {
     }
 
     @GetMapping("/remittance/{userId}")
-    public ResponseEntity<?> remittanceHistory(@PathVariable("userId") Long userId) {
-        List<TransactionsDTO> transactions = accountService.getRemittanceHistory(userId);
-
+    public ResponseEntity<?> remittanceHistory(@PathVariable("userId") Long userId,
+                                               //@RequestParam(required = false) Long lastTransactionId,
+                                               @RequestParam("page") int page,
+                                               @RequestParam("size") int size) {
+        //List<TransactionsDTO> transactions = accountService.getRemittanceHistory(userId, lastTransactionId, size);
+        List<TransactionsDTO> transactions = accountService.getRemittanceHistory(userId, page, size);
         return ResponseEntity.status(HttpStatus.OK).body(transactions);
     }
-
 
 }
