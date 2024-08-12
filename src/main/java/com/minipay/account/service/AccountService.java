@@ -185,12 +185,6 @@ public class AccountService {
         return dailyLimit.getDailyTotalBalance();
     }
 
-    @Scheduled(cron = "0 0 0 * * ?")
-    @Transactional
-    public void dailyLimitReset() {
-        List<DailyLimit> dailyLimitForAllUsers = dailyLimitRepository.findAll();
-        dailyLimitForAllUsers.forEach(dailyLimit -> dailyLimit.resetDailyBalance(0));
-    }
 
     @Scheduled(cron = "0 0 4 * * ?")
     @Transactional
@@ -235,6 +229,5 @@ public class AccountService {
             }
         }
     }
-
 
 }
