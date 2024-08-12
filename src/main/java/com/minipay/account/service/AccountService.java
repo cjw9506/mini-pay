@@ -185,32 +185,4 @@ public class AccountService {
         return dailyLimit.getDailyTotalBalance();
     }
 
-    @Scheduled(cron = "0 0 8 * * ?")
-    @Transactional
-    public void withdrawalOfSaving() {
-        List<Account> accounts = accountRepository.findAllSavingsAccounts();
-
-        for (Account a : accounts) {
-            if (a.getType() == Type.REGULAR_SAVING) {
-                Account mainAccount = accountRepository.findByUserIdAndType(a.getUser().getId(), Type.MAIN);
-                if (a.getRegularFee() > mainAccount.getBalance()) {
-                    long chargeAmount = (((a.getRegularFee() + 9999 - mainAccount.getBalance()) / 10000) * 10000); //충전금액
-
-                    Deposit deposit = Deposit.builder()
-                            .account(a)
-                            .amount(chargeAmount)
-                            .timeStamp(LocalDateTime.now())
-                            .build();
-
-                    depositRepository.save(deposit);
-                    mainAccount.deposit(-a.getRegularFee() + chargeAmount);
-                    a.deposit(a.getRegularFee());
-                } else {
-                    mainAccount.deposit(-a.getRegularFee());
-                    a.deposit(a.getRegularFee());
-                }
-            }
-        }
-    }
-
 }
