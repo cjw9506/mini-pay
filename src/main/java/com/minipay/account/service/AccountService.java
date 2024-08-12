@@ -185,23 +185,6 @@ public class AccountService {
         return dailyLimit.getDailyTotalBalance();
     }
 
-
-    @Scheduled(cron = "0 0 4 * * ?")
-    @Transactional
-    public void savingInterest() {
-        List<Account> accounts = accountRepository.findAllSavingsAccounts();
-
-        for (Account a : accounts) {
-            if (a.getType() == Type.FREE_SAVING) {
-                long interest = (long) Math.ceil((a.getBalance() / 100) * 3);
-                a.addInterest(interest);
-            } else if (a.getType() == Type.REGULAR_SAVING) {
-                long interest = (long) Math.ceil((a.getBalance() / 100) * 5);
-                a.addInterest(interest);
-            }
-        }
-    }
-
     @Scheduled(cron = "0 0 8 * * ?")
     @Transactional
     public void withdrawalOfSaving() {
