@@ -30,7 +30,7 @@ public class DailyLimit {
         this.dailyTotalBalance += dailyTotalBalance;
     }
 
-    public void resetDailyBalance(long dailyTotalBalance) {
+    public void resetDailyBalance() {
         this.dailyTotalBalance = 0;
     }
 }
