@@ -11,7 +11,9 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.database.JpaCursorItemReader;
 import org.springframework.batch.item.database.JpaPagingItemReader;
+import org.springframework.batch.item.database.builder.JpaCursorItemReaderBuilder;
 import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
 import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
 import org.springframework.context.annotation.Bean;
@@ -23,14 +25,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 public class InterestBatchConfiguration {
 
     private final EntityManagerFactory entityManagerFactory;
-
-    //todo 성능 개선을 위해 해봐야 하는 시도들
-    //      청크 크기 조정
-    //      인덱스 최적화 -> type에 인덱스 걸기 (완료)
-    //      EntityManagerFactory 최적화 -> batch_size 조정
-    //      병렬처리?
-    //      페이징 성능 최적화 -> page size 조정
-    // 일단 정상 동작은 함
 
     @Bean
     public Job interestJob(JobRepository jobRepository, Step interestStep) {
@@ -50,12 +44,11 @@ public class InterestBatchConfiguration {
     }
 
     @Bean
-    public JpaPagingItemReader<Account> interestReader() {
+    public JpaCursorItemReader<Account> interestReader() {
 
-        return new JpaPagingItemReaderBuilder<Account>()
+        return new JpaCursorItemReaderBuilder<Account>()
                 .name("interestReader")
                 .entityManagerFactory(entityManagerFactory)
-                .pageSize(10)
                 .queryString("SELECT a FROM Account a WHERE a.type IN ('REGULAR_SAVING', 'FREE_SAVING')")
                 .build();
     }
