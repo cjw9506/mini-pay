@@ -85,6 +85,8 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
+    @Operation(summary = "특정 유저의 모든 거래 내역 조회", description = "특정 유저의 모든 입출금 내역을 조회합니다.")
+    @ApiResponse(responseCode = "200", description = "성공")
     @GetMapping("/remittance/{userId}")
     public ResponseEntity<?> remittanceHistory(@PathVariable("userId") Long userId,
                                                //@RequestParam(required = false) Long lastTransactionId,
