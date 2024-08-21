@@ -46,7 +46,7 @@ Minipay는 입출금, 송금, 그리고 내역 관리를 제공하는 금융 시
   ### 2. 전체조회를 페이징으로 변경하기 [링크](https://glacier-beef-911.notion.site/7d0abdebcfa7453aa8c5915f79a83c09?pvs=74)
   전체조회를 페이징으로 변경하면서 전체조회에 대한 부담은 덜었지만, 뒷페이지를 읽을수록 느려진다는 문제를 발견하고 이를 어떻게 해결할가에 대해 고민해보았습니다.
   <br>
-  <img width="996" alt="Paging" src="https://github.com/user-attachments/assets/c6fd5f7d-5a73-4db9-a85c-2b5b7ade695f">
+  <img width="995" alt="스크린샷 2024-08-21 오후 8 20 00" src="https://github.com/user-attachments/assets/9eb43164-9316-4866-8bb6-ab00c221c121">
   <br>
   <br>
   ### 3. 리플리케이션을 통한 DB 단일 장애 지점 방지하기 [링크](https://glacier-beef-911.notion.site/DB-e0ccc5dabae34cf882afe238f11209e9?pvs=74)
