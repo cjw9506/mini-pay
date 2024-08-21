@@ -86,6 +86,7 @@ public class AccountService {
 
         if (main.getBalance()  < request.getBalance()) {
             throw new IllegalArgumentException("메인계좌의 잔액이 부족합니다");
+            //todo 예외처리
         }
 
         main.deposit(-request.getBalance());

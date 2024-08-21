@@ -44,6 +44,9 @@ public class AccountController {
         return ResponseEntity.ok(null);
     }
 
+    @Operation(summary = "메인계좌에서 적금계좌로 이체", description = "유저의 메인계좌에서 적금계좌로 일정 금액을 송금합니다.")
+    @ApiResponse(responseCode = "200", description = "성공")
+    @ApiResponse(responseCode = "500", description = "계좌를 찾을 수 없거나, 메인계좌의 잔액이 부족한 경우 발생합니다.")
     @PatchMapping("/withdrawal") //이체 메인 -> 적금
     public ResponseEntity<?> withdrawal(@RequestBody WithdrawalDTO request) {
 
