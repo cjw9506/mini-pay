@@ -20,8 +20,8 @@ Minipay는 입출금, 송금, 그리고 내역 관리를 제공하는 금융 시
 
 ## 0. 목차
 - [1.프로젝트 아키텍처](#1-아키텍처)
-- [2.ERD 구조](#2-ERD)
-- [3.API 문서](#3-API-문서)
+- [2.ERD](#2-erd)
+- [3.API 문서](#3-api-document)
 - [4.프로젝트 중 고려사항](#4-프로젝트-중-고려사항)
 
 ## 1. 아키텍처
@@ -30,7 +30,8 @@ Minipay는 입출금, 송금, 그리고 내역 관리를 제공하는 금융 시
 ## 2. ERD
 <img width="100%" alt="ERD" src="https://private-user-images.githubusercontent.com/63503519/359353821-981d3aa5-54db-4447-8776-5dd06b344d75.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MjQyMjcwOTEsIm5iZiI6MTcyNDIyNjc5MSwicGF0aCI6Ii82MzUwMzUxOS8zNTkzNTM4MjEtOTgxZDNhYTUtNTRkYi00NDQ3LTg3NzYtNWRkMDZiMzQ0ZDc1LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA4MjElMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwODIxVDA3NTMxMVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTk5MWFlOTVmZjFjMmYxY2JkZTMzOGEyN2I2ZjIyZTVjYTc0NzRhN2M1Zjk1MzU1MjhjZDI1YzM1OGU3YWFlYWYmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.LHVVJX2RawXQzIVz8z7ifB7SiE0t1pqn78eTqTNK77I">
 
-## 3. API 문서 [링크](http://54.180.228.13:8080/swagger-ui/index.html#/)
+## 3. API Document
+[API 문서 링크](http://54.180.228.13:8080/swagger-ui/index.html#/)
 <img width="100%" alt="API DOCS" src="https://private-user-images.githubusercontent.com/63503519/359802701-fc689c30-8670-4993-8095-c4ce26443edb.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MjQyMjcwMDcsIm5iZiI6MTcyNDIyNjcwNywicGF0aCI6Ii82MzUwMzUxOS8zNTk4MDI3MDEtZmM2ODljMzAtODY3MC00OTkzLTgwOTUtYzRjZTI2NDQzZWRiLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA4MjElMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwODIxVDA3NTE0N1omWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTY1MWU3N2YxNDU4OWI0ODcwNmJkODU0OTBhZjQwOWZkZGMzNTgzODk1ODE2ODE3MGQ0ZmRkYzZkMTU3YjM3YWImWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.vjjMWoS4rPCYP_lDGdwWV_NXipgnNf-Z5YaWbgA5GmE">
 
 ## 4. 프로젝트 중 고려사항
