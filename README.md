@@ -36,8 +36,8 @@ Minipay는 입출금, 송금, 그리고 내역 관리를 제공하는 금융 시
 
 ## 4. 프로젝트 중 고려사항
 
-  ### 1. 이체 중 발생하는 동시성 문제 해결하기 
-  [링크](https://glacier-beef-911.notion.site/143681fce2c540cb91f01dd96dfbac9a?pvs=74)
+  ### 1. 이체 중 발생하는 동시성 문제 해결하기 [링크](https://glacier-beef-911.notion.site/143681fce2c540cb91f01dd96dfbac9a?pvs=74)
+  
   이체 기능 수행중에 동시성 이슈가 발생하는지에 대해 확인해보고, 어떤 문제가 있어 발생했으며 어떻게 해결할지에 대해 생각해보았습니다.
   <br>
   <img width="1001" alt="Concurrency" src="https://github.com/user-attachments/assets/3e4efd0d-6904-4626-a31e-b30a73006677">
