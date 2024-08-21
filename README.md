@@ -25,10 +25,10 @@ Minipay는 입출금, 송금, 그리고 내역 관리를 제공하는 금융 시
 - [4.프로젝트 중 고려사항](#4-프로젝트-중-고려사항)
 
 ## 1. 아키텍처
-<img width="633" alt="ERD" src="https://github.com/user-attachments/assets/981d3aa5-54db-4447-8776-5dd06b344d75">
+<img width="640" alt="Architecture" src="https://github.com/user-attachments/assets/e15198ad-a938-42ed-bc7b-208e3b025898">
 
 ## 2. ERD
-<img width="640" alt="Architecture" src="https://github.com/user-attachments/assets/e15198ad-a938-42ed-bc7b-208e3b025898">
+<img width="633" alt="ERD" src="https://github.com/user-attachments/assets/981d3aa5-54db-4447-8776-5dd06b344d75">
 
 ## 3. API Document
 [API 문서 링크](http://54.180.228.13:8080/swagger-ui/index.html#/)
