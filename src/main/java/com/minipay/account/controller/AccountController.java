@@ -55,6 +55,8 @@ public class AccountController {
         return ResponseEntity.ok().body(null);
     }
 
+    @Operation(summary = "해당 유저의 모든 계좌를 조회", description = "해당 유저의 메인계좌 및 적금계좌를 전부 불러옵니다.")
+    @ApiResponse(responseCode = "200", description = "성공")
     @GetMapping("/{userId}")
     public ResponseEntity<?> getAccounts(@PathVariable("userId") Long userId) {
         List<GetAccountResponseDTO> accounts = accountService.getAccounts(userId);
