@@ -46,6 +46,7 @@ public class AccountService {
 
         if (dailyLimitBalance + request.getBalance() > TODAY_LIMIT) {
             throw new IllegalArgumentException("일일 입금 금액 초과");
+            //현재 예외 처리 안해놔서 500에러 발생
         }
 
         Deposit deposit = Deposit.builder()

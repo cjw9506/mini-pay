@@ -3,6 +3,9 @@ package com.minipay.account.controller;
 import com.minipay.account.domain.Type;
 import com.minipay.account.dto.*;
 import com.minipay.account.service.AccountService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Account", description = "Account API")
 @RestController
 @RequestMapping("/api/accounts")
 @RequiredArgsConstructor
@@ -17,6 +21,10 @@ public class AccountController {
 
     private final AccountService accountService;
 
+
+    @Operation(summary = "메인계좌 충전", description = "유저의 메인계좌에 돈을 충전합니다.")
+    @ApiResponse(responseCode = "200", description = "성공")
+    @ApiResponse(responseCode = "500", description = "일일 충전 한도 초과")
     @PostMapping // 입금
     public ResponseEntity<?> deposit(@RequestBody DepositDTO request) {
 
