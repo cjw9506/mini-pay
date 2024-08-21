@@ -46,6 +46,7 @@ public class AccountService {
 
         if (dailyLimitBalance + request.getBalance() > TODAY_LIMIT) {
             throw new IllegalArgumentException("일일 입금 금액 초과");
+            //현재 예외 처리 안해놔서 500에러 발생
         }
 
         Deposit deposit = Deposit.builder()
@@ -64,6 +65,7 @@ public class AccountService {
     public void addAccount(AccountDTO request) {
 
         User user = userRepository.findById(request.getUserId()).orElseThrow(IllegalArgumentException::new);
+        //todo 예외처리
 
         Account newAccount = Account.builder()
                 .user(user)
@@ -84,6 +86,7 @@ public class AccountService {
 
         if (main.getBalance()  < request.getBalance()) {
             throw new IllegalArgumentException("메인계좌의 잔액이 부족합니다");
+            //todo 예외처리
         }
 
         main.deposit(-request.getBalance());
