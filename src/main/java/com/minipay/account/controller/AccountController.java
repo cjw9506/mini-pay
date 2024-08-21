@@ -64,6 +64,8 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(accounts);
     }
 
+    @Operation(summary = "해당 유저의 특정 계좌를 조회", description = "해다 유저의 여러 계좌 중 특정 계좌를 조회합니다.")
+    @ApiResponse(responseCode = "200", description = "성공")
     @GetMapping("/{userId}/account")
     public ResponseEntity<?> getAccount(@PathVariable("userId") Long userId,
                                         @RequestParam("type") Type type) {
