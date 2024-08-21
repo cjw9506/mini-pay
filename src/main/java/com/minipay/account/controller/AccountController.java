@@ -74,6 +74,9 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(account);
     }
 
+    @Operation(summary = "다른 유저에게 이체", description = "본인의 메인계좌에서 다른 유저의 메인계좌로 송금합니다.")
+    @ApiResponse(responseCode = "200", description = "성공")
+    @ApiResponse(responseCode = "500", description = "계좌를 찾을 수 없거나, 메인계좌의 잔액이 부족한 경우 발생합니다.")
     @PostMapping("/remittance")
     public ResponseEntity<?> remittance(@RequestBody RemittanceDTO request) {
 
