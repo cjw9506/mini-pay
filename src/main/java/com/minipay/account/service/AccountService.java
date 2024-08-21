@@ -65,6 +65,7 @@ public class AccountService {
     public void addAccount(AccountDTO request) {
 
         User user = userRepository.findById(request.getUserId()).orElseThrow(IllegalArgumentException::new);
+        //todo 예외처리
 
         Account newAccount = Account.builder()
                 .user(user)

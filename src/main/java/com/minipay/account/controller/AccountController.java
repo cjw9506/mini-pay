@@ -33,6 +33,9 @@ public class AccountController {
         return ResponseEntity.ok(null);
     }
 
+    @Operation(summary = "적금계좌 생성", description = "유저의 적금계좌를 추가로 생성합니다.")
+    @ApiResponse(responseCode = "200", description = "성공")
+    @ApiResponse(responseCode = "500", description = "해당 회원을 찾을 수 없습니다.")
     @PostMapping("/saving") //적금계좌생성
     public ResponseEntity<?> addSavingAccount(@RequestBody AccountDTO request) {
 
